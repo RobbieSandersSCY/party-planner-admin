@@ -1,6 +1,6 @@
 // === Constants ===
 const BASE = "https://fsa-crud-2aa9294fe819.herokuapp.com/api";
-const COHORT = ""; // Make sure to change this!
+const COHORT = "/2601-FTB-ET-WEB-FT"; // Make sure to change this!
 const API = BASE + COHORT;
 
 // === State ===
@@ -85,6 +85,25 @@ function PartyList() {
   return $ul;
 }
 
+/** A form to add a new party */
+function PartyForm() {
+  const $form = document.createElement("form")
+  $form.classList.add("form");
+  $form.innerHTML = `
+    <form>
+      <label for="name">Name:</label><br>
+      <input type="text" id="name" name="name"><br>
+      <label for="desc">Description:</label><br>
+      <input type="text" id="desc" name="desc">
+      <label for="date">Date:</label><br>
+      <input type="date" id="date" name="date">
+      <label for="loc">Location:</label><br>
+      <input type="text" id="loc" name="loc">
+    </form> 
+  `;
+  return $form;
+}
+
 /** Detailed information about the selected party */
 function SelectedParty() {
   if (!selectedParty) {
@@ -137,6 +156,8 @@ function render() {
       <section>
         <h2>Upcoming Parties</h2>
         <PartyList></PartyList>
+        <h3>Add a new party</h3>
+        <PartyForm></PartyForm>
       </section>
       <section id="selected">
         <h2>Party Details</h2>
@@ -147,6 +168,7 @@ function render() {
 
   $app.querySelector("PartyList").replaceWith(PartyList());
   $app.querySelector("SelectedParty").replaceWith(SelectedParty());
+  $app.querySelector("PartyForm").replaceWith(PartyForm());
 }
 
 async function init() {

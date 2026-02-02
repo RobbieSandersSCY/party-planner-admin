@@ -57,6 +57,35 @@ async function getGuests() {
   }
 }
 
+/** Create new party post from form */
+async function addParty(party) {
+  try {
+    await fetch(API + "/events", {
+      method: "Post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(party),
+    });
+    await getParties();
+  } catch(err) {
+    console.log(err);
+  }  
+}
+
+/** Delete Selected Party */
+async function deleteParty(id) {
+  try {
+    await fetch(API + "/events/" + id, {
+      method: "DELETE"
+    });
+    selectedParty = undefined;
+    await getParties();
+  } catch (e) {
+    console.log(e);
+  }
+}
+
 // === Components ===
 
 /** Party name that shows more details about the party when clicked */
@@ -99,8 +128,27 @@ function PartyForm() {
       <input type="date" id="date" name="date">
       <label for="loc">Location:</label><br>
       <input type="text" id="loc" name="loc">
-    </form> 
+      <input type="submit" value="Submit">
+    </form>
   `;
+  $form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const data = new FormData($form);
+    // const nameInput = data.get("name");
+    // const descInput = data.get("desc");
+    const dateInput = new Date(data.get("date")).toISOString();
+    // const locInput = data.get("loc");
+    // console.log(`name:`, nameInput);
+    // console.log(`desc:`, descInput);
+    // console.log(`date:`, dateInput);
+    // console.log(`loc:`, locInput);
+    addParty({
+      name: data.get("name"),
+      description: data.get("desc"),
+      date: dateInput,
+      location: data.get("loc")
+      });
+  });
   return $form;
 }
 
@@ -121,8 +169,12 @@ function SelectedParty() {
     <address>${selectedParty.location}</address>
     <p>${selectedParty.description}</p>
     <GuestList></GuestList>
+    <button>Delete Party</button>
   `;
   $party.querySelector("GuestList").replaceWith(GuestList());
+
+  $delete = $party.querySelector("button");
+  $delete.addEventListener("click", () => deleteParty(selectedParty.id));
 
   return $party;
 }
